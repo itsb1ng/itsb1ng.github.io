@@ -1,7 +1,7 @@
 ---
 layout: page
 title: About Me
-subtitle: Cybersecurity
+subtitle: Cybersecurity Analyst
 ---
 
 I am bing. A Sophomore Cybersecurity Analyst B.S. with a minor in Business Administrations that has experience in GDScript, Lua, and PostgreSQL. 
