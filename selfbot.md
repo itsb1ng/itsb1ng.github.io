@@ -7,10 +7,10 @@ gh-badge: [star, fork, follow]
 ---
 > # BingBot Self-Bot
 > Simple Discord Self-Bot that contains Hypixel API capabilities
-> BingBot is a Self-Bot designed and coded by bingle#0001. It offers some configuration and lists the available commands via commands.txt
+> BingBot is a Self-Bot designed and coded for myself. It offers some configuration and lists the available commands via commands.txt
 
 
-| [BingBot Official Discord](https://discord.gg/5VKkhgHUyS){: .btn} | [GitHub Repo](https://github.com/itsb1ng/BingBot-Self-Bot/blob/main/BingBot.py){: .btn}
+| [GitHub Repo](https://github.com/itsb1ng/BingBot-Self-Bot){: .btn}
 
 > # How to Install
 > 1. Run install.bat to reveal files and download proper python modules
@@ -59,18 +59,6 @@ if (message.author.id != bing.user.id) and ("https://discord.gift/" in message.c
             if NITRO_WEBHOOK != "":
                 try:
                     webhook = Webhook.from_url(NITRO_WEBHOOK, adapter=RequestsWebhookAdapter())
-```
-```python
-@bing.command()
-async def pornhub(ctx, firstword, secondword):
-    image = requests.get(f"https://logohub.appspot.com/{firstword}-{secondword}-120.webp?scheme=white&transparent=true&padding=0", stream=True)
-    if image.status_code == 200:
-        image.raw.decode_content = True
-        with open("image.png",'wb') as f:
-            shutil.copyfileobj(image.raw, f)
-    file = discord.File("image.png", filename="image.png")
-    await ctx.send(file=file)
-    os.remove("image.png")
 ```
 ```python
 @bing.command()
