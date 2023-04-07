@@ -7,7 +7,7 @@ share-img: /assets/img/hadez_logo.png
 cover-img: /assets/img/hadez_login.png
 tags: [python]
 ---
-* Stressor and DDOS Panel (Code is closed source)
+* Stressor and DOS Panel (Code is closed source)
 
 > IP Geolocation
 
@@ -42,8 +42,8 @@ def menu(package, id):
                 ┃          \(     )/    \(      )/    \(    )/     \( |_____|/      \(    )/           ┃
                 ┃           '     '      '      '      '    '       '    )/          '    '            ┃
                 ┃                                                        '                             ┃
-                ┃                    Developed by bing#0001 | Managed by Bandy#1000                    ┃
-                ┃                           https://discord.gg/wupV9ZC7ET                              ┃
+                ┃                    Developed by [REDACTED] | Managed by [REDACTED]                   ┃
+                ┃                           https://discord.gg/[REDACTED]                              ┃
                 ┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
                 ┃                                                                                      ┃
                 ┃           """ + Fore.RED + "[1]. " + Fore.LIGHTRED_EX + """UDP DOS Attack                    """ + Fore.RED + "[2]. " + Fore.LIGHTRED_EX + """Geolocate IP                   ┃     
@@ -57,4 +57,4 @@ def menu(package, id):
 ```
 
 {: .box-warning}
-**Warning:** Script is closed source and available for purchase. Join [Hadez Stresser Discord](https://discord.gg/wupV9ZC7ET) for more information
+**Warning:** Script is closed source and for educational purposes only.

@@ -1,7 +1,9 @@
 ---
 layout: page
 title: About Me
-subtitle: Software Engineering Major
+subtitle: Cybersecurity
 ---
 
-I am bing. A Freshman Software Engineering Major that has experience in Python Development and Rust, Minecraft, and Discord Management.
+I am bing. A Sophomore Cybersecurity Analyst B.S. with a minor in Business Administrations that has experience in GDScript, Lua, and PostgreSQL. 
+I am fluent in Python with many discord bot projects and scripts. Currently I am working with GDScript and C++ to further my interests in game
+development

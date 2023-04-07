@@ -53,4 +53,4 @@ def payment_source():
 ```
 
 {: .box-error}
-**Error:** Script still in development. Join [BingBot Official Discord](https://discord.gg/d6TB9xUBgj) for more information
+**Error:** Script no longer in development

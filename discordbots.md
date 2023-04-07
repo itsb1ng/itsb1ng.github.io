@@ -3,66 +3,102 @@ layout: page
 title: Discord Bot Projects
 subtitle: Open Source Discord Bots
 ---
-> # ₦P Discord Bot
-> Bot to condust features similar to Skyblock Maniacs Discord Bot
+> # DragSim
+> Fully Functional Ticket Bot that replicates Ticket Tool
 
-> [₦P Carries Discord](https://discord.gg/9h4WRePBgw){: .btn}
+> # Multi-Step Ticket for server administration
 
-
-> # Multi-Step Ticket for Skyblock Dungeon Carries
-
-> - Create a ticket with a command and go through a series of reactions to receive the available carriers
-> - Able to request a carrier
-> - "Wait for" system for reactions
+> - Create a ticket with a button
+> - "Discord Modal" system for forms
 
 ```python
-embed = discord.Embed(title="₦P Carry Menu", color=0x4B66FF)
-embed.add_field(name="Dungeon Carries: 💀", value="Floor 4\nFloor 5\nFloor 6\nFloor 7\nMastermode Floor 1\nMastermode Floor 2\nMastermode Floor 3\nMastermode Floor 4\nMastermode Floor 5", inline=True)
-embed.add_field(name="Pet Leveling Service: 🐶", value="Leveling any pets",inline=True)
-embed.add_field(name="Slayer Service: ⚔", value="Tier 5 Revenant Horror\nTier 4 Sven Packmaster\nTier 1-4 Voidgloom Seraph",inline=False)
-embed.set_footer(icon_url="https://i.imgur.com/nvQ7j1W.png", text="₦P Carries")
-embed.set_thumbnail(url=ctx.guild.icon_url)
-ghost_ping = await channel.send(ctx.author.mention)
-await ghost_ping.delete()
+class ticketModal(discord.ui.Modal):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
 
-msg = await channel.send(embed=embed)
+        self.add_item(discord.ui.InputText(label="Reason", style=discord.InputTextStyle.long))
 
-reactions = ['💀', '🐶', '⚔']
-for x in reactions:
-    await msg.add_reaction(x)
+    def variables(self, user, channel):
+        self.user = user
+        self.channel = channel
 
-def check(reaction, reactor):
-    global person
-    person = reactor
-    return reactor.id == ctx.author.id
+    async def callback(self, interaction: discord.Interaction):
 
-reaction = await bing.wait_for("reaction_add", check=check, timeout=None)
+        await interaction.response.send_message(f"Ticket opened successfully at {self.channel.mention}", ephemeral=True)
 
-if reaction[0].emoji == "💀":
-    embed = discord.Embed(title="Floor 4", color=0x4B66FF)
-    embed.set_thumbnail(url="https://static.wikia.nocookie.net/hypixel-skyblock/images/8/89/Ghast.png/revision/latest?cb=20210627234303")
-    embed.add_field(name="Completion", value="- 1 run: 375.0K\n- 5(+) runs: 360.0K", inline=True)
-    embed.add_field(name="S Runs", value="- 1 run: 550.0K\n- 5(+) runs: 500.0K", inline=True)
-    embed.set_footer(icon_url="https://i.imgur.com/nvQ7j1W.png", text="₦P Carries")
-    
-    floor4_msg = await channel.send(embed=embed)
-    await floor4_msg.add_reaction('4️⃣')
+        embed = discord.Embed(title="Support Ticket Opened!", description="Thank you for contacting support.\nPlease describe your intent for the ticket and wait for a response.", color=BLUE_COLOR)
+        embed.add_field(name="Ticket Reason", value=self.children[0].value, inline=False)
+        embed.set_footer(icon_url=interaction.guild.icon.url, text="Powered by dragsim.org")
+        closeButton = Button(style=discord.ButtonStyle.red, custom_id="close", label=" Close Ticket", emoji="🔒")
+        closeView = View()
+        closeView.add_item(closeButton)
+        await self.channel.send(embed=embed, view=closeView)
 
-    embed = discord.Embed(title="Floor 5", color=0x4B66FF)
-    embed.set_thumbnail(url="https://static.wikia.nocookie.net/hypixel-skyblock/images/1/13/Livid.png/revision/latest?cb=20201101032941")
-    embed.add_field(name="Completion", value="- 1 run: 340.0K\n- 5(+) runs: 290.0K", inline=True)
-    embed.add_field(name="S Runs", value="- 1 run: 550.0K\n- 5(+) runs: 500.0K", inline=True)
-    embed.add_field(name="S+ Runs", value="- 1 run: 800.0K\n- 5(+) runs: 710.0K", inline=True)
-    embed.set_footer(icon_url="https://i.imgur.com/nvQ7j1W.png", text="₦P Carries")
-    
-    floor5_msg = await channel.send(embed=embed)
-    await floor5_msg.add_reaction('5️⃣')
+        async def close_callback(interaction:discord.Interaction):     
+            overwrite = discord.PermissionOverwrite()
+            overwrite.send_messages = False
+            overwrite.read_messages = False
+            
+            with open('opentickets.json', 'r') as opener:
+                openTickets = json.load(opener)
+
+            intStaff = False
+            for j, k in enumerate(interaction.user.roles):
+                if k.name == "Staff":
+                    intStaff = True
+            isOPEN = False
+            for i, dictionary in enumerate(openTickets):
+                if dictionary['user'] == interaction.user.id:
+                    creatorNum = i
+                    CREATOR = bing.get_user(dictionary['user'])
+                    await interaction.channel.set_permissions(CREATOR, overwrite=overwrite)
+                    isOPEN = True
+                    break
+            if isOPEN:
+                user_messages = await interaction.channel.history(limit=None).flatten()
+                file = open("messages.txt", "w")
+                user_messages.reverse()
+                for item in user_messages:
+                    try:
+                        file.write(f"[{item.created_at.strftime('%m/%d/%Y, %H:%M:%S')}] {item.author.name}#{item.author.discriminator}: {item.content}\n")
+                    except:
+                        pass
+                file.close()
+                opener = bing.get_user(openTickets[creatorNum]['user'])
+                transcript_channel = bing.get_channel("[REDACTED]")
+                sendEmbed = discord.Embed(title="Ticket Closed", color=BLUE_COLOR)
+                sendEmbed.set_author(name="DragSim", url=interaction.guild.icon.url)
+                sendEmbed.add_field(name="🔢 Ticket ID", value=openTickets[creatorNum]['ticket'])
+                sendEmbed.add_field(name="✅ Opened By", value=opener.mention)
+                sendEmbed.add_field(name="🔒 Closed By", value=interaction.user.mention)
+                sendEmbed.add_field(name="🕐 Open Time", value=f"<t:{int(openTickets[creatorNum]['time'])}:f>")
+                sendEmbed.add_field(name="❓ Reason", value=self.children[0].value)
+                sendEmbed.timestamp = datetime.now()
+                await transcript_channel.send(embed=sendEmbed, file=discord.File("messages.txt"))
+                openTickets.pop(creatorNum)
+                with open('opentickets.json', 'w') as outfile:
+                    outfile.write(json.dumps(openTickets))
+                try:
+                    await opener.send(embed=sendEmbed, file=discord.File("messages.txt"))
+                except:
+                    pass
+
+                embed = discord.Embed(title=f"Transcript Generated for #{interaction.channel}", color=0xFFC300)
+                await interaction.response.send_message(embed=embed)
+            else:
+                await interaction.response.send_message("Attempting to close ticket...", ephemeral=True)
+            if intStaff:
+                embed = discord.Embed(title=f"Closing Ticket in 5 seconds", color=0xFD9C9C)
+                await interaction.channel.send(embed=embed)
+                await asyncio.sleep(5)
+                await self.channel.delete()
+
+        closeButton.callback = close_callback
 ```
 
 # VerifyBing Discord Bot
 
-> Created for the BingBot Official Discord Server. Purpose is to send a randomly generated string on an image generated by the Pillow library to complete verification
-> [BingBot Official Discord](https://discord.gg/5VKkhgHUyS){: .btn}
+> Purpose is to send a randomly generated string on an image generated by the Pillow library to complete verification
 
 ```python
 @bing.command()
@@ -123,7 +159,7 @@ async def verify(ctx):
 async def verify(ctx, ign=None):
   CONTINUATION = True
   for x in ctx.author.roles:
-    if x.id == 991410393681498142:
+    if x.id == "[REDACTED]":
       CONTINUATION = False
       break
     else:
@@ -157,36 +193,4 @@ async def verify(ctx, ign=None):
               profile_num = z
   
           profile_name = data['player']['stats']['SkyBlock']['profiles'][profile_id]["cute_name"]
-
-          if senither_data['data'][profile_num]['skills']['average_skills'] >= 20:        
-            guild = ctx.guild 
-            verified_role = ctx.guild.get_role(991410393681498142) #Role to give once verified
-            user = ctx.author
-            await user.add_roles(verified_role)
-            await ctx.author.edit(nick=user_name['name'])
-            namemc = discord.utils.get(bing.emojis, name='namemc')
-            skycrypt = discord.utils.get(bing.emojis, name='skycrypt')
-            namemc_link = f"https://namemc.com/search?q={user_name['name']}"
-            skycrypt_link = f"https://sky.shiiyu.moe/stats/{user_name['name']}/#"
-            embed = discord.Embed(title="✅ You're all set", description=f"{ctx.author.mention} verified as `{user_name['name']}`\n{namemc} [NameMC Profile]({namemc_link})\n{skycrypt} [Skycrypt Link]({skycrypt_link})", color=blue_color)
-            embed.set_thumbnail(url=f"https://crafatar.com/avatars/{user_name['id']}")
-            bingle = bing.get_user(360456839495680000)
-            embed.set_footer(text=bingle, icon_url=bingle.avatar_url)
-            await ctx.send(embed=embed)
-          else:
-            await ctx.reply(f"**{user_name['name']}** does not meet the requirements to verify in **{ctx.guild}**")
-            return
-        elif user_discord == None:
-          user_name = requests.get(f"https://api.mojang.com/users/profiles/minecraft/{ign}").json()
-          await ctx.send(f"{user_name['name']} does not have a linked Discord")
-          
-        else:
-          await ctx.send(f"You cannot verify as {user_name['name']}")
-        
-      except:
-        await ctx.send(f"Unable to verify {ign}")
-    else:
-      await ctx.reply("Please provide a valid IGN")
-  else:
-    await ctx.reply("You are already verified")
 ```

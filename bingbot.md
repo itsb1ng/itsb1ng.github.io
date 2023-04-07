@@ -6,9 +6,9 @@ gh-repo: itsb1ng/BingBot-Discord-Bot
 gh-badge: [star, fork, follow]
 ---
 > # BingBot Discord-Bot
-> Discord bot that conducts Hypixel API and Economy System
+> Multifunctional Discord bot that uses many APIs including Hypixel and functional Economy System (Code is not optimized or up-to-date)
 
-> [Invite BingBot](https://discord.com/api/oauth2/authorize?client_id=997670054181208125&permissions=8&scope=bot%20applications.commands){: .btn} | [BingBot Official Discord](https://discord.gg/5VKkhgHUyS){: .btn} | [GitHub Repo](https://github.com/itsb1ng/BingBot-Discord-Bot/blob/main/main.py){: .btn}
+> [GitHub Repo](https://github.com/itsb1ng/BingBot-Discord-Bot){: .btn}
 
 
 > # Accessibility to Slash Commands and Economy System
@@ -48,17 +48,6 @@ async def mine(ctx):
 
 ```python
 if (heist_user_num == 0) or (heist_user_num-1 == heist_partner_num) or (heist_user_num+1 == heist_partner_num) or (heist_user_num == heist_partner_num):
-      if heist_json[heist_user_num]['heist'] == "Burj Khalifa":
-        income = random.randint(1500,2500)
-      elif heist_json[heist_user_num]['heist'] == "The Louvre Museum":
-        income = random.randint(8000,11000)
-      elif heist_json[heist_user_num]['heist'] == "Emirates Palace":
-        income = random.randint(17000,23000)
-      elif heist_json[heist_user_num]['heist'] == "SoFi Stadium":
-        income = random.randint(30000,35000)
-      elif heist_json[heist_user_num]['heist'] == "The Great Mosque of Mecca":
-        income = random.randint(50000,65000)
-        
       if rank_ == "Script Kitty":
         income_float = income + (income*0.10)
       elif rank_ == "Bitcoin Screenshotter":
@@ -126,20 +115,53 @@ async def weight(ctx, name):
 ```
 
 ```python
-async def bin(ctx, *, item):
-  try:
-    auction_data = requests.get("http://maro.skyblockextras.com/api/auctions/all").json()
-    for i in range(0,len(auction_data['data'])):
-      if auction_data['data'][i]['name'] == item or item.lower() == auction_data['data'][i]['name'].lower():
-        number = i
+try:
+      user_name = requests.get(f"https://api.mojang.com/users/profiles/minecraft/{name}").json()
+    except:
+      embed=discord.Embed(title="Invalid Username", description="Make sure you spelled the username correctly", color=0xAA4A44)
+      embed.set_footer(text=f"Command executed by {ctx.author.name} | Powered by itsb1ng.dev")
+      await ctx.send(embed=embed)
+      return
 
-    item_id = auction_data['data'][number]['id']
-    item_data = requests.get(f"http://maro.skyblockextras.com/api/auctions/quickStats/{item_id}").json()
-    embed = discord.Embed(title=auction_data['data'][number]['name'], description=item_id, color=0xC98FFC)
-    embed.add_field(name="Lowest BIN", value="{:,.0f} coins".format(auction_data['data'][number]['value']))
-    embed.add_field(name="Average Price", value="{:,.2f} coins".format(item_data['data']['average']))
-    embed.add_field(name="Highest Price", value="{:,.2f} coins".format(item_data['data']['max']))
+    uuid = user_name["id"]
+    sb_data = requests.get(f"https://api.hypixel.net/skyblock/profiles?key={KEY}&uuid={uuid}").json()
+    profileData = requests.get(f"https://sky.shiiyu.moe/api/v2/profile/{name}").json()
+    for i, profileId in enumerate(profileData['profiles']):
+      if profileData['profiles'][profileId]['current'] is True:
+        profile_id = profileId
+        break
+
+    for z in range(0,len(sb_data['profiles'])):
+      if sb_data['profiles'][z]['profile_id'] == profile_id:
+        profile_num = z
+
+    def number_format(num):
+      if num is None:
+        format_number = 0
+      elif num > 1000000000:
+        format = num / 1000000000
+        format_number = f"{format:.2f}b"
+      elif num > 1000000:
+        format = num / 1000000
+        format_number = f"{format:.1f}m"
+      elif num > 1000:
+        format = num / 1000
+        format_number = f"{format:.1f}k"
+      return format_number
+    
+    def zero_checker(num):
+      if num is None:
+        num = 0
+      return num
+
+    profile_name = sb_data['profiles'][profile_num]["cute_name"]
+
+    profile = sb_data['profiles'][profile_num]['members'][uuid]
+
+    dict = {"data": profile}
+
+    networth_data = requests.post("https://skyblock.acebot.xyz/api/networth/categories", json=dict).json()
 ```
 
 {: .box-note}
-**Note:** Code is not completely up to date testing is being further initiated
+**Note:** Code was originally created with little experience and was not fully optimized
