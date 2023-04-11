@@ -7,7 +7,10 @@ share-img: /assets/img/hadez_logo.png
 cover-img: /assets/img/hadez_login.png
 tags: [python]
 ---
-* Stressor and DOS Panel (Code is closed source)
+This project has made me realize how easy it is to launch attacks on networks and
+how important 'Operation PowerOFF' was in the security of networks.
+
+* Internet Stressor (Code is closed source)
 
 > IP Geolocation
 
